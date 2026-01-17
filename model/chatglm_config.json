@@ -1,0 +1,6 @@
+﻿{
+  "model_name": "ChatGLM3-6B",
+  "max_length": 512,
+  "temperature": 0.7,
+  "top_p": 0.9
+}

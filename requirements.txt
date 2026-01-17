@@ -1,0 +1,81 @@
+﻿# ====================================
+# 智能班会通知分组推送系统 - 依赖清单
+# ====================================
+
+# -------------------- 核心依赖 --------------------
+
+# 大模型相关
+transformers==4.36.0        # Hugging Face模型加载
+torch==2.1.2                # PyTorch深度学习框架
+torchvision==0.16.2         # PyTorch视觉库
+sentencepiece==0.1.99       # ChatGLM分词器
+protobuf==3.20.3            # 协议缓冲区
+
+# LangChain相关
+langchain==0.1.0            # 工作流编排框架
+langchain-core==0.1.10      # LangChain核心组件
+langchain-community==0.0.13 # LangChain社区扩展
+
+# API服务
+fastapi==0.109.0            # Web框架
+uvicorn==0.27.0             # ASGI服务器
+pydantic==2.5.3             # 数据验证
+pydantic-settings==2.1.0    # 配置管理
+
+# -------------------- 数据处理 --------------------
+
+pandas==2.1.4               # 数据处理和分析
+numpy==1.26.3               # 数值计算
+openpyxl==3.1.2             # Excel文件读写
+
+# -------------------- 工具库 --------------------
+
+requests==2.31.0            # HTTP请求
+python-multipart==0.0.6     # 文件上传处理
+python-dotenv==1.0.0        # 环境变量管理
+pyyaml==6.0.1               # YAML配置文件
+
+# -------------------- 开发工具 --------------------
+
+# 日志和调试
+loguru==0.7.2               # 日志记录
+colorama==0.4.6             # 终端彩色输出
+rich==13.7.0                # 富文本终端输出
+
+# 代码质量
+black==23.12.1              # 代码格式化（可选）
+flake8==7.0.0               # 代码检查（可选）
+pytest==7.4.4               # 单元测试（可选）
+
+# -------------------- 可选依赖 --------------------
+
+# Gradio界面（如需Web演示）
+# gradio==4.13.0            # Web UI界面
+
+# 加速推理（可选）
+# accelerate==0.25.0        # 模型加速
+# bitsandbytes==0.41.3      # 量化支持
+
+# GPU监控（可选）
+# gpustat==1.1.1            # GPU状态监控
+# nvidia-ml-py3==7.352.0    # NVIDIA管理库
+
+# -------------------- 说明 --------------------
+# 
+# 安装方式：
+#   pip install -r requirements.txt
+#
+# GPU版本（推荐）：
+#   确保已安装 CUDA 11.8+ 和对应的 PyTorch
+#   pip install torch==2.1.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+#
+# CPU版本（备选）：
+#   pip install torch==2.1.2+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+#
+# 最小安装（仅核心功能）：
+#   pip install transformers torch fastapi uvicorn langchain pandas requests
+#
+# 注意事项：
+#   1. protobuf需要固定版本3.20.3，避免兼容性问题
+#   2. ChatGLM3-6B首次运行会自动下载约12GB模型文件
+#   3. 建议在虚拟环境中安装，避免依赖冲突
