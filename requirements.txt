@@ -17,7 +17,7 @@ langchain-core==0.1.10      # LangChain核心组件
 langchain-community==0.0.13 # LangChain社区扩展
 
 # API服务
-fastapi==0.109.0            # Web框架
+fastapi==0.128.0          # Web框架
 uvicorn==0.27.0             # ASGI服务器
 pydantic==2.5.3             # 数据验证
 pydantic-settings==2.1.0    # 配置管理

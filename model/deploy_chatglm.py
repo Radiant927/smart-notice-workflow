@@ -20,3 +20,5 @@ def test_model(model, tokenizer):
 if __name__ == "__main__":
     model, tokenizer = load_model()
     test_model(model, tokenizer)
+
+
