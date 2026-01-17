@@ -1,1 +1,45 @@
-﻿{}
+﻿{
+  "workflow_name": "智能班会通知分组推送工作流",
+  "description": "基于本地大模型 + LangChain 的班会通知生成与分组推送工作流",
+  "version": "1.0",
+  "nodes": [
+    {
+      "id": "input_node",
+      "type": "user_input",
+      "name": "用户输入",
+      "description": "接收老师输入的班会主题和要求"
+    },
+    {
+      "id": "preprocess_node",
+      "type": "preprocess",
+      "name": "输入预处理",
+      "description": "对输入文本进行清洗和结构化"
+    },
+    {
+      "id": "model_node",
+      "type": "llm_api",
+      "name": "大模型生成通知",
+      "api": "http://localhost:8000/generate_notice",
+      "description": "调用本地 ChatGLM3-6B 模型生成班会通知内容"
+    },
+    {
+      "id": "grouping_node",
+      "type": "logic",
+      "name": "学生分组逻辑",
+      "description": "根据学生数据对通知进行分组推送"
+    },
+    {
+      "id": "output_node",
+      "type": "output",
+      "name": "结果展示",
+      "description": "在 Coze 界面中展示生成的通知内容"
+    }
+  ],
+  "edges": [
+    { "from": "input_node", "to": "preprocess_node" },
+    { "from": "preprocess_node", "to": "model_node" },
+    { "from": "model_node", "to": "grouping_node" },
+    { "from": "grouping_node", "to": "output_node" }
+  ]
+}
+
