@@ -95,3 +95,27 @@ if __name__ == "__main__":
         port=8000,
         reload=True
     )
+
+# api/api_server.py
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+from workflow.langchain_workflow import run_workflow_with_input
+
+app = FastAPI(title="智能班会通知生成 API")
+
+
+class NoticeRequest(BaseModel):
+    time: str
+    location: str
+    theme: str
+
+
+@app.post("/generate_notice")
+def generate_notice(req: NoticeRequest):
+    result = run_workflow_with_input(req.dict())
+    return {
+        "status": "success",
+        "notice": result
+    }
