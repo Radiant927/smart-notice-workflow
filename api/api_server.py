@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 import uvicorn
+from workflow.langchain_workflow import run_workflow_with_input
 
 # ================================
 # 模型加载（复用 model/deploy_chatglm.py 中的逻辑）
@@ -45,7 +46,6 @@ class ChatResponse(BaseModel):
 def root():
     return {"message": "API 服务运行中"}
 
-
 @app.post("/chat", response_model=ChatResponse)
 def chat_api(req: ChatRequest):
     """通用对话接口"""
@@ -59,7 +59,6 @@ def chat_api(req: ChatRequest):
         history=req.history
     )
     return {"response": response}
-
 
 @app.post("/generate_notice", response_model=ChatResponse)
 def generate_notice(req: NoticeRequest):
@@ -84,38 +83,22 @@ def generate_notice(req: NoticeRequest):
     )
     return {"response": response}
 
+@app.post("/generate_notice_workflow")
+def generate_notice_workflow(req: NoticeRequest):
+    """使用 LangChain 工作流生成班会通知"""
+    result = run_workflow_with_input(req.dict())
+    return {
+        "status": "success",
+        "notice": result
+    }
 
 # ================================
 # 本地启动入口
 # ================================
 if __name__ == "__main__":
     uvicorn.run(
-        "api.api_server:app",
+        "api_server:app",  # 修正为不带目录的路径
         host="0.0.0.0",
         port=8000,
         reload=True
     )
-
-# api/api_server.py
-
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-from workflow.langchain_workflow import run_workflow_with_input
-
-app = FastAPI(title="智能班会通知生成 API")
-
-
-class NoticeRequest(BaseModel):
-    time: str
-    location: str
-    theme: str
-
-
-@app.post("/generate_notice")
-def generate_notice(req: NoticeRequest):
-    result = run_workflow_with_input(req.dict())
-    return {
-        "status": "success",
-        "notice": result
-    }

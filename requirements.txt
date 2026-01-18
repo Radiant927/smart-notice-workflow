@@ -6,8 +6,8 @@
 
 # 大模型相关
 transformers==4.36.0        # Hugging Face模型加载
-torch==2.1.2                # PyTorch深度学习框架
-torchvision==0.16.2         # PyTorch视觉库
+torch==2.9.1               # PyTorch深度学习框架
+torchvision==0.24.1         # PyTorch视觉库
 sentencepiece==0.1.99       # ChatGLM分词器
 protobuf==3.20.3            # 协议缓冲区
 
