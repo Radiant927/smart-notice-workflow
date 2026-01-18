@@ -1,13 +1,11 @@
-﻿# LangChain工作流
-# workflow/langchain_workflow.py
+﻿# workflow/langchain_workflow.py
+
 from workflow.chains import create_notice_chain
-from workflow.grouping import group_student
 
-
-def run_workflow_with_student(input_data: dict, student: dict) -> str:
+def run_workflow_with_input(input_data: dict) -> str:
     """
-    根据学生分组生成对应通知
+    LangChain 工作流统一入口（当前为 mock 演示版本）
     """
-    group = group_student(student)
-    chain = create_notice_chain(group)
+    chain = create_notice_chain()
     return chain.run(input_data)
+
