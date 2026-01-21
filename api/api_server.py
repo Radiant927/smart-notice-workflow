@@ -1,80 +1,90 @@
 ﻿# api/api_server.py
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from typing import List
-import uvicorn
+from typing import Literal
 
-from workflow.langchain_workflow import run_workflow_with_input
-
-# ================================
-# FastAPI 初始化
-# ================================
+# ======================
+# 1. FastAPI 初始化
+# ======================
 app = FastAPI(
-    title="智能班会通知系统 API（Mock / Workflow 版）",
-    description="基于 LangChain 工作流的班会通知生成接口（无真实模型依赖）",
-    version="0.1.0"
+    title="智能班会通知生成系统",
+    description="面向辅导员/班主任的班会通知智能生成服务",
+    version="1.0"
 )
 
-# ================================
-# 数据模型
-# ================================
-class ChatRequest(BaseModel):
-    prompt: str
+templates = Jinja2Templates(directory="api/templates")
 
+# ======================
+# 2. 请求体定义
+# ======================
 class NoticeRequest(BaseModel):
     theme: str
-    audience: str
+    audience: Literal["student", "leader"]
     length: int = 100
 
-class ChatResponse(BaseModel):
-    response: str
 
-# ================================
-# API 接口
-# ================================
-@app.get("/")
-def root():
-    return {"message": "API 服务运行中（Mock / Workflow 模式）"}
-
-@app.post("/chat", response_model=ChatResponse)
-def chat_api(req: ChatRequest):
+# ======================
+# 3. 网页入口（普通用户）
+# ======================
+@app.get("/", response_class=HTMLResponse)
+def index(request: Request):
     """
-    通用对话接口（走 LangChain Mock 工作流）
+    用户使用入口（网页界面）
     """
-    result = run_workflow_with_input({
-        "content": req.prompt
-    })
-    return {"response": result}
-
-@app.post("/generate_notice_workflow")
-def generate_notice_workflow(req: NoticeRequest):
-    """
-    使用 LangChain 工作流生成班会通知
-    """
-    prompt = f"""
-请你作为一名高校辅导员，生成一则班会通知。
-
-主题：{req.theme}
-对象：{req.audience}
-字数要求：约 {req.length} 字
-语气：正式、清晰、有号召力
-"""
-    result = run_workflow_with_input({
-        "content": prompt
-    })
-    return {
-        "status": "success",
-        "notice": result
-    }
-
-# ================================
-# 本地启动入口
-# ================================
-if __name__ == "__main__":
-    uvicorn.run(
-        "api.api_server:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request}
     )
+
+
+# ======================
+# 4. 核心接口（业务接口）
+# ======================
+@app.post("/generate_notice_workflow")
+def generate_notice_workflow(data: NoticeRequest):
+    """
+    智能班会通知生成接口
+    """
+    theme = data.theme
+    audience = data.audience
+    length = data.length
+
+    # ====== 这里模拟你的 LangChain / 本地模型结果 ======
+    # 实际项目中，你只需要把这里替换成：
+    # result = workflow.process_notice(...)
+    # 或 llm_chain.run(...)
+
+    if audience == "student":
+        notice_text = (
+            f"📢 班会通知\n\n"
+            f"⏰ 时间：明天下午\n"
+            f"📍 地点：教学楼 A101\n"
+            f"📌 内容：{theme}\n\n"
+            f"请同学们合理安排时间，准时参加。"
+        )
+    else:
+        notice_text = (
+            f"📢 班委会议通知\n\n"
+            f"⏰ 时间：明天下午\n"
+            f"📍 地点：教学楼 A101\n"
+            f"📌 主题：{theme}\n\n"
+            f"请班委提前准备相关材料，并提前到场协调。"
+        )
+
+    # ======================
+    # 5. 返回“可直接使用”的结果
+    # ======================
+    return JSONResponse({
+        "status": "success",
+        "notice": notice_text
+    })
+
+
+# ======================
+# 6. 健康检查（可选，加分项）
+# ======================
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "service": "notice-generator"}
